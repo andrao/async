@@ -81,7 +81,6 @@
         "@semantic-release/git": "^10.0.1",
         "@swc/jest": "^0.2.36",
         "@types/async": "3.2.24",
-        "@types/clone": "2.1.4",
         "@types/jest": "^29.5.12",
         "commitizen": "^4.3.0",
         "cz-conventional-changelog": "^3.3.0",

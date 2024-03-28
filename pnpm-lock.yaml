@@ -31,9 +31,6 @@ devDependencies:
   '@types/async':
     specifier: 3.2.24
     version: 3.2.24
-  '@types/clone':
-    specifier: 2.1.4
-    version: 2.1.4
   '@types/jest':
     specifier: ^29.5.12
     version: 29.5.12
@@ -1399,10 +1396,6 @@ packages:
     resolution: {integrity: sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==}
     dependencies:
       '@babel/types': 7.24.0
-    dev: true
-
-  /@types/clone@2.1.4:
-    resolution: {integrity: sha512-NKRWaEGaVGVLnGLB2GazvDaZnyweW9FJLLFL5LhywGJB3aqGMT9R/EUoJoSRP4nzofYnZysuDmrEJtJdAqUOtQ==}
     dev: true
 
   /@types/conventional-commits-parser@5.0.0:
