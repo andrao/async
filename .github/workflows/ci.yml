@@ -1,0 +1,184 @@
+name: CI
+
+on:
+    pull_request:
+        branches: '*'
+    push:
+        branches: [main, next, alpha, beta]
+    merge_group:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+    format:
+        runs-on: ubuntu-latest
+        steps:
+            # --- Start setup --- #
+            # Checkout repo
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # Install pnpm globally
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            # Install Node.js & establish pnpm cache
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            # Install repo dependencies
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            # --- End setup --- #
+
+            # Run
+            - name: Format
+              run: pnpm format
+
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            # --- Start setup --- #
+            # Checkout repo
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # Install pnpm globally
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            # Install Node.js & establish pnpm cache
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            # Install repo dependencies
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            # --- End setup --- #
+
+            # Run
+            - name: Lint
+              run: pnpm lint
+
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            # --- Start setup --- #
+            # Checkout repo
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # Install pnpm globally
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            # Install Node.js & establish pnpm cache
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            # Install repo dependencies
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            # --- End setup --- #
+
+            # Run
+            - name: Test
+              run: pnpm test:i
+
+    typecheck:
+        runs-on: ubuntu-latest
+        steps:
+            # --- Start setup --- #
+            # Checkout repo
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # Install pnpm globally
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            # Install Node.js & establish pnpm cache
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            # Install repo dependencies
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            # --- End setup --- #
+
+            # Run
+            - name: Typecheck
+              run: pnpm typecheck
+
+    release:
+        if: github.event_name == 'push'
+        needs:
+            - format
+            - lint
+            - test
+            - typecheck
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write # to be able to publish a GitHub release
+            issues: write # to be able to comment on released issues
+            pull-requests: write # to be able to comment on released pull requests
+            id-token: write # to enable use of OIDC for npm provenance
+
+        steps:
+            # --- Start setup --- #
+            # Checkout repo
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # Install pnpm globally
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 8
+
+            # Install Node.js & establish pnpm cache
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            # Install repo dependencies
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            # --- End setup --- #
+
+            # Audit deps
+            - name: Audit dependencies
+              run: pnpm audit
+
+            # Release
+            - name: Release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  HUSKY: '0'
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: pnpm exec semantic-release
